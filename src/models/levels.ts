@@ -3,7 +3,7 @@ import { Schema, Document, model, ObjectId } from 'mongoose';
 interface Id {
   id: ObjectId
 }
-interface ILevel {
+export interface ILevel {
   levelName: string;
   providers: Array<Id>
 }
@@ -31,7 +31,6 @@ const kycLevelsSchema: Schema = new Schema({
 
   deleted: {
     type: Boolean,
-    unique: true,
     default: false
   },
 
@@ -46,8 +45,6 @@ const kycLevelsSchema: Schema = new Schema({
     toJSON: { virtuals: true, versionKey: false },
   }
 );
-
-
 
 export default model<IKYCLevel>('KYCLevel', kycLevelsSchema);
 

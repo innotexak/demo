@@ -10,12 +10,35 @@ import { ILevelValidation, LevelsValidation } from '../../validation/validation.
 class LevelsDatasource extends Base {
 
   //Get all kyc levels
-  async getKycLevels(): Promise<IKYCLevel[]> { return (await __KYCLevel.find({})) }
+  async getKycLevels(): Promise<any> {
+    const kycLevels = await __KYCLevel.aggregate([
+      {
+        $lookup: {
+          from: "service_providers",
+          localField: "providers",
+          foreignField: "_id",
+          as: "providers"
+        }
+      }
+    ])
+
+    if (kycLevels.length === null || kycLevels.length === undefined) throw new ErrorHandler().NotFoundError('Record not found')
+    return kycLevels
+  }
 
   //Get single kyc level by id
-  async getKycLevel(_id: string): Promise<IKYCLevel> {
-    const kycLevel = await __KYCLevel.findById(_id)
-    if (!kycLevel) throw new ErrorHandler().NotFoundError('KYC level not found')
+  async getKycLevel(_id: string): Promise<any> {
+    const kycLevel = await __KYCLevel.aggregate([
+      {
+        $lookup: {
+          from: "service_providers",
+          localField: "providers",
+          foreignField: "_id",
+          as: "providers"
+        }
+      },
+    ])
+    if (kycLevel.length === null || kycLevel.length === undefined) throw new ErrorHandler().NotFoundError('KYC level not found')
     return kycLevel
   }
 
@@ -42,7 +65,7 @@ class LevelsDatasource extends Base {
       if (!docs.providers.includes(_id as any)) docs.providers.push(_id as any)
     }
 
-    const updated = await __KYCLevel.updateOne({ _id: _id }, { $set: { levelName, providers: docs.providers } },);
+    const updated = await __KYCLevel.updateOne({ _id }, { $set: { levelName, providers: docs.providers } },);
 
     if (updated.matchedCount === 0) throw new ErrorHandler().UserInputError('Invalid level id')
 
@@ -51,8 +74,24 @@ class LevelsDatasource extends Base {
 
   }
 
+  async addingArrayOfLevels(userId: string, levels: [object]) {
+
+    const arrayOfLevels = []
+    levels.forEach(async (level) => {
+      const singleLevel: ILevelValidation = { ...level, userId }
+
+      arrayOfLevels.push(singleLevel)
+      await new LevelsValidation().createLevel(singleLevel)
+    })
+
+    const newKYCLevels = await __KYCLevel.insertMany(arrayOfLevels)
+
+    if (newKYCLevels) return 'KYC levels created successfully';
+
+
+  }
+
 
 }
 
-// Export the LevelsDatasource class
 export default LevelsDatasource

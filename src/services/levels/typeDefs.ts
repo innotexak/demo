@@ -43,16 +43,21 @@ const KycLevelType = gql`
   }
 
   type Query {
-  getKycLevels: [IKycLevel!]!
-    getKycLevel(_id: ID!): IKycLevel!
+  getKycLevels: JSON!
+    getKycLevel(_id: ID!): JSON!
   }
 
   type Mutation {
-     addKycLevel(userId: ID!, levelName:String!, providers:[String!]!): String!
+    addKycLevel(userId: ID!, levelName:String!, providers:[String!]!): String!
     deleteKycLevel(_id: ID!): String!
     updateKycLevel(levelId:String!, levelName:String!, providers:[String!]!): String!
+    addingArrayOfLevels(userId:ID, levels:[ArrayOfLevels!]!):String
   }
 
+    input ArrayOfLevels {
+    levelName:String!
+    providers:[String!]!
+  }
 
     type IKycLevel{
     _id:ID!

@@ -15,17 +15,22 @@ export const LevelsMutation = {
     const { levelId, levelName, providers } = iKycLevel
 
     return await new LevelsDatasource().updateKycLevel(levelId, { levelName, providers })
+  },
+
+  async addingArrayOfLevels(__: unknown, { userId, levels }: { userId: string, levels: [object] }): Promise<String> {
+
+    return await new LevelsDatasource().addingArrayOfLevels(userId, levels)
   }
 
 }
 
 export const LevelsQuery = {
-  async getKycLevels(): Promise<IKYCLevel[]> {
+  async getKycLevels(): Promise<any> {
 
     return await new LevelsDatasource().getKycLevels()
   },
 
-  async getKycLevel(__, _id: string): Promise<IKYCLevel> {
+  async getKycLevel(__, _id: string): Promise<any> {
     return await new LevelsDatasource().getKycLevel(_id)
   },
 }

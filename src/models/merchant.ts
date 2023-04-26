@@ -2,6 +2,7 @@ import { Schema, Document, model, ObjectId, Model } from 'mongoose';
 
 
 export interface IMerchant extends Document {
+    userId: string,
     firstName: string,
     lastName: string,
     ballance: string,
@@ -14,12 +15,26 @@ export interface IMerchant extends Document {
 
 const merchantKycsSchema: Schema = new Schema({
 
+    userId: {
+        type: String,
+        unique: true,
+        required: true
+    },
 
-    firstName: { type: String, required: true },
+    firstName: {
+        type: String,
+        required: true
+    },
 
-    lastName: { type: String, required: true },
+    lastName: {
+        type: String,
+        required: true
+    },
 
-    ballance: { type: String, default: "20000" },
+    ballance: {
+        type: String,
+        default: "20000"
+    },
 
     status: {
         type: String,

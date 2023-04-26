@@ -23,10 +23,14 @@ const createKycSchema = object({
     kycType: string().oneOf(["bvn", "nin", "passport", "drivingLicence"])
 })
 
+const validationNumberSchema = object({
+    validationNumber: string().min(11, 'Minimum of 11 digits requried').max(16, 'Maximum of 16 digits requried').required()
+})
 
 export type ILevelValidation = InferType<typeof createLevelSchema>;
 export type IServiceValidation = InferType<typeof createServiceSchema>
 export type IKycValidation = InferType<typeof createKycSchema>
+export type IValidationNumber = InferType<typeof validationNumberSchema>
 
 export class LevelsValidation {
     createLevel(levelData: ILevelValidation) {
@@ -56,6 +60,18 @@ export class KycsValidation {
     createKyc(kycData: IKycValidation) {
         return new Promise((resolve, reject) => {
             createKycSchema.validate(kycData, { abortEarly: true }).then((data) => {
+                resolve(data)
+            }).catch((err) => {
+                reject(new ErrorHandler().ValidationError(err))
+            })
+        })
+    }
+}
+
+export class ValNumberValidation {
+    validateNumber(val: IValidationNumber) {
+        return new Promise((resolve, reject) => {
+            validationNumberSchema.validate(val, { abortEarly: true }).then((data) => {
                 resolve(data)
             }).catch((err) => {
                 reject(new ErrorHandler().ValidationError(err))
