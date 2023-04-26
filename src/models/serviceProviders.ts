@@ -14,15 +14,11 @@ export interface IserviceProviders extends Document {
   fields: Array<IFields>
 }
 
-enum fieldTypes {
-  file = 'file',
-  input = 'textInput',
-}
 
 export const fields: Schema = new Schema<IFields>({
   inputType: {
     type: String,
-    enum: Object.keys(fieldTypes),
+    enum: ['file', 'textInput'],
     required: true,
   },
   title: {

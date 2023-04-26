@@ -15,7 +15,7 @@ const ServiceProviderType = gql`
 
   enum FieldType {
     file
-    text input
+    textInput
   }
 
   input FieldInput {
@@ -26,11 +26,10 @@ const ServiceProviderType = gql`
   input IserviceProvider {
     service: String!
     disabled: Boolean!
-    fields: [FieldInput!]!
+    fields: FieldInput!
   }
 
   type Query {
-    # Define your query types here
     getServiceProviders: [ServiceProvider!]!
     getServiceProvider(_id: ID!): ServiceProvider!
   }

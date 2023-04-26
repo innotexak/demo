@@ -2,7 +2,7 @@ import { Schema, Document, model, ObjectId, Model } from 'mongoose';
 
 
 export interface IMerchant extends Document {
-    userId: string,
+    merchantId: string,
     firstName: string,
     lastName: string,
     ballance: string,
@@ -15,7 +15,7 @@ export interface IMerchant extends Document {
 
 const merchantKycsSchema: Schema = new Schema({
 
-    userId: {
+    merchantId: {
         type: String,
         unique: true,
         required: true

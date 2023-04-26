@@ -3,15 +3,16 @@ import UserDatasource from "./datasource.js";
 
 type KeyType = 'publicKey' | 'secretKey';
 type ICreateM = {
+  merchantId: string,
   firstName: string,
   lastName: string,
 
 }
 export const MerchantMutation = {
 
-  async createMerchant(__: unknown, { firstName, lastName }: ICreateM): Promise<any> {
+  async createMerchant(__: unknown, { merchantId, firstName, lastName }: ICreateM): Promise<any> {
 
-    return await new UserDatasource().createMerchant({ firstName, lastName })
+    return await new UserDatasource().createMerchant({ merchantId, firstName, lastName })
   },
 
 
@@ -19,8 +20,14 @@ export const MerchantMutation = {
 };
 
 export const MerchantQuery = {
-  async getMerchantKyc(__: unknown): Promise<any> {
+  async getMerchants(__: unknown): Promise<any> {
     return new UserDatasource().fetchMerchant()
+
+
+  },
+
+  async getMerchantById(__: unknown, { merchantId }: { merchantId: string }): Promise<any> {
+    return new UserDatasource().fetchSingleMerchant(merchantId)
 
 
   }
