@@ -1,12 +1,13 @@
 import Base from '../../Base.js'
 import { ErrorHandler } from '../../helpers/ErrorHandler.js'
 import __Merchant from '../../models/merchant.js'
+import { IMerchant } from './interfaces.js'
 
 
 class MerchantDatasource extends Base {
 
 
-    async createMerchant(data): Promise<any> {
+    async createMerchant(data: any): Promise<string> {
 
         const keys = await this.generateUniqueApiKeys()
 
@@ -14,10 +15,10 @@ class MerchantDatasource extends Base {
             ...keys,
             ...data
         })
-        if (create) return create
+        if (create) return "Merchant created successfully"
     }
 
-    async fetchMerchant(): Promise<any> {
+    async fetchMerchant(): Promise<IMerchant[]> {
         return await __Merchant.find({})
 
     }

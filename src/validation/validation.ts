@@ -1,4 +1,4 @@
-import { InferType, array, boolean, object, string } from "yup"
+import { InferType, array, boolean, date, object, string } from "yup"
 import { ErrorHandler } from "../helpers/ErrorHandler.js";
 import { Types } from "mongoose";
 
@@ -18,9 +18,15 @@ const createServiceSchema = object({
 });
 
 const createKycSchema = object({
-    kycId: string(),
-    data: object(),
-    kycType: string().oneOf(["bvn", "nin", "passport", "drivingLicence"])
+    userId: objectId.required(),
+    validationNumber: string().required(),
+    firstName: string().required(),
+    lastName: string().required(),
+    phoneNumber: string().required(),
+    dateOfBirth: date().required(),
+    status: string().required(),
+    gender: string().oneOf(['male', 'female']),
+    kycType: string().oneOf(["bvn", "nin", "passport", "drivingLicence"]),
 })
 
 const validationNumberSchema = object({

@@ -43,8 +43,8 @@ const KycLevelType = gql`
   }
 
   type Query {
-  getKycLevels: JSON!
-    getKycLevel(_id: ID!): JSON!
+    getKycLevels: [IKycLevel!]!
+    getKycLevel(_id: ID!): IKycLevel!
   }
 
   type Mutation {

@@ -1,30 +1,33 @@
 
 import __KYC, { IKyc } from "../../models/Kyc.js";
 import UserDatasource from "./datasource.js";
+import { ICreateKyc } from './interfaces.js'
 
 
 
 export const KycMutation = {
 
-  async verifyNIN(__, { validationNumber }: { validationNumber: string }): Promise<any> {
+  async verifyNIN(__: unknown, { validationNumber }: { validationNumber: string }): Promise<any> {
     return await new UserDatasource().verifyNIN(validationNumber);
   },
 
-  async verifyBVN(__, { validationNumber }: { validationNumber: string }): Promise<any> {
+  async verifyBVN(__: unknown, { validationNumber }: { validationNumber: string }): Promise<any> {
     return await new UserDatasource().verifyBVN(validationNumber);
   },
 
-  async verifyPassport(__, { validationNumber }: { validationNumber: string }): Promise<any> {
+  async verifyPassport(__: unknown, { validationNumber }: { validationNumber: string }): Promise<any> {
     return await new UserDatasource().verifyPassport(validationNumber);
   },
 
-  async verifyDrivingLincence(__, { validationNumber }: { validationNumber: string }): Promise<any> {
+  async verifyDrivingLincence(__: unknown, { validationNumber }: { validationNumber: string }): Promise<any> {
     return await new UserDatasource().verifyDrivingLincence(validationNumber);
 
   },
 
-  async createKyc(__, data: { validationNumber: string, kycType: string }): Promise<any> {
-    return await new UserDatasource().createKyc(data)
+  async createKyc(__: unknown, { values }: { values: ICreateKyc }): Promise<String> {
+
+
+    return await new UserDatasource().createKyc(values)
   }
 
 

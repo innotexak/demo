@@ -4,7 +4,8 @@ import Base from '../../Base.js'
 import { ErrorHandler } from '../../helpers/ErrorHandler.js'
 
 import __Kyc from '../../models/Kyc.js'
-import { ValNumberValidation } from '../../validation/validation.js'
+import { KycsValidation, ValNumberValidation } from '../../validation/validation.js'
+import { ICreateKyc } from './interfaces.js'
 
 class LevelsDatasource extends Base {
 
@@ -37,8 +38,10 @@ class LevelsDatasource extends Base {
     return data
   }
 
-  async createKyc(data: any): Promise<any> {
-    return await __Kyc.create(data)
+  async createKyc(data: ICreateKyc): Promise<String> {
+    await new KycsValidation().createKyc(data)
+    const created = await __Kyc.create(data)
+    if (created) return "KYC created successfully"
   }
 
 }
