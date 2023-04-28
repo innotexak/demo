@@ -1,9 +1,9 @@
-import mongoose, { Types } from 'mongoose'
+import { Types } from 'mongoose'
 import Base from '../../Base.js'
 import crypto from 'crypto'
 import { ErrorHandler } from '../../helpers/ErrorHandler.js'
 
-import __KYCLevel, { IKYCLevel } from '../../models/levels.js'
+import __KYCLevel from '../../models/levels.js'
 import { ILevelValidation, LevelsValidation } from '../../validation/validation.js'
 import { ISession, ISessionsInterface } from './type.js'
 import __Session from '../../models/levelSessionSchema.js'
@@ -160,11 +160,11 @@ class LevelsDatasource extends Base {
 
     const configLevels = await __Session.find({ processToken })
 
-    if (!configLevels.length) throw new ErrorHandler().ValidationError('Invalid session')
+    if (!configLevels.length) throw new ErrorHandler().ValidationError('Session expired, try again')
 
     const mylevel = await __Session.findOne({ levelName: levelName })
 
-    if (!mylevel) throw new ErrorHandler().ValidationError('Invalid session')
+    if (!mylevel) throw new ErrorHandler().ValidationError('Invalid session credentials')
 
     for (let _id of providers) {
       if (!mylevel.providers.includes(_id as any)) mylevel.providers.push(_id as any)

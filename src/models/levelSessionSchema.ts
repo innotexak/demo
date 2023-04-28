@@ -27,7 +27,7 @@ const kycLevelsSchema: Schema = new Schema({
 
     providers: [Schema.Types.ObjectId],
 
-    createdAt: { type: Date, default: Date.now, expires: '3h' },
+    createdAt: { type: Date, default: Date.now, expires: '2h' },
     processToken: {
         type: String,
         required: true
