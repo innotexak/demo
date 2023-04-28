@@ -18,13 +18,12 @@ export interface IKYCLevel extends Document {
 const kycLevelsSchema: Schema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
-    required: true
+    required: true,
   },
 
   levelName: {
     type: String,
     required: true,
-    unique: true
   },
 
   providers: [Schema.Types.ObjectId],

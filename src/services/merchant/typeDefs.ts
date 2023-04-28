@@ -8,6 +8,7 @@ const MerchantType = gql`
   }
 type Mutation {
   createMerchant( merchantId:String firstName:String lastName:String ): String
+
 }
 
 type IMerchant {

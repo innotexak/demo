@@ -1,10 +1,13 @@
-import { Types } from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import Base from '../../Base.js'
-
+import crypto from 'crypto'
 import { ErrorHandler } from '../../helpers/ErrorHandler.js'
 
 import __KYCLevel, { IKYCLevel } from '../../models/levels.js'
 import { ILevelValidation, LevelsValidation } from '../../validation/validation.js'
+import { ISession, ISessionsInterface } from './type.js'
+import __Session from '../../models/levelSessionSchema.js'
+import __Merchant from '../../models/merchant.js'
 
 
 class LevelsDatasource extends Base {
@@ -43,9 +46,13 @@ class LevelsDatasource extends Base {
   }
 
   // Method for adding a new kyc  level
-  async addKycLevel(kycLevel: ILevelValidation): Promise<String> {
-    await new LevelsValidation().createLevel(kycLevel)
-    const newKYCLevel = await __KYCLevel.create(kycLevel)
+  async addKycLevel(userId: string, processToken: string): Promise<String> {
+    const sessionData = await __Session.find({ processToken })
+    if (!sessionData.length) throw new ErrorHandler().ValidationError("Invalid session")
+    const data = sessionData.map((item) => {
+      return { providers: item.providers, levelName: item.levelName, userId: item.userId }
+    })
+    const newKYCLevel = await __KYCLevel.insertMany(data)
     if (newKYCLevel) return 'KYC level created successfully';
   }
 
@@ -91,6 +98,82 @@ class LevelsDatasource extends Base {
 
   }
 
+  async createLevelsSessions(numLevels: number, userId: string): Promise<ISessionsInterface> {
+    const isUser = await __KYCLevel.aggregate([
+      {
+        $match: {
+          userId: new Types.ObjectId(userId)
+        }
+      },
+      {
+        $lookup: {
+          from: "merchants",
+          localField: "userId",
+          foreignField: "_id",
+          as: "merchant"
+        }
+      },
+    ])
+
+
+    if (isUser.length) throw new ErrorHandler().UserInputError('KYC level configuration already exist')
+    const isSession = await __Session.aggregate([
+      {
+        $match: {
+          userId: new Types.ObjectId(userId)
+        }
+      },
+      {
+        $lookup: {
+          from: "merchants",
+          localField: "userId",
+          foreignField: "_id",
+          as: "merchant"
+        }
+      },
+    ])
+
+    if (isSession.length) throw new ErrorHandler().ForbiddenError('You already have an existing session')
+    let levels: ISession[] = []; // Initialize the levels array
+    const processToken = `NA_SE-${crypto.randomBytes(16).toString('hex')}-END`;
+
+    if (numLevels <= 0) throw new ErrorHandler().UserInputError('Invalid input');
+
+    if (numLevels === 1) {
+      return { levels: [{ label: 'level 1', value: 'level 1' }], processToken };
+    } else {
+      for (let i = 1; i <= numLevels; i++) {
+        levels.push({ label: `Level ${i}`, value: `level ${i}` })
+      }
+
+      const saveMany = await levels.map(async (level) => {
+        return await __Session.create({ levelName: level.label, providers: [], processToken, userId })
+      });
+      ;
+
+      if (saveMany) return { levels, processToken };
+    }
+  }
+
+
+  async updateSessionsLevels(processToken: string, levelName: string, providers: string[]): Promise<String> {
+
+    const configLevels = await __Session.find({ processToken })
+
+    if (!configLevels.length) throw new ErrorHandler().ValidationError('Invalid session')
+
+    const mylevel = await __Session.findOne({ levelName: levelName })
+
+    if (!mylevel) throw new ErrorHandler().ValidationError('Invalid session')
+
+    for (let _id of providers) {
+      if (!mylevel.providers.includes(_id as any)) mylevel.providers.push(_id as any)
+    }
+
+    const updated = await __Session.updateOne({ levelName: levelName }, { $set: { providers: mylevel.providers } },);
+
+    if (updated.matchedCount > 0) return "Saved, please proceed";
+  }
 
 }
 

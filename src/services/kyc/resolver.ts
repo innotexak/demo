@@ -25,8 +25,6 @@ export const KycMutation = {
   },
 
   async createKyc(__: unknown, { values }: { values: ICreateKyc }): Promise<String> {
-
-
     return await new UserDatasource().createKyc(values)
   }
 

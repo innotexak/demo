@@ -32,6 +32,8 @@ class MerchantDatasource extends Base {
         if (!data) throw new ErrorHandler().ValidationError("Invalid merchant credential provided")
         return data
     }
+
 }
+
 
 export default MerchantDatasource

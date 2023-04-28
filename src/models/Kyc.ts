@@ -55,6 +55,7 @@ const KycSchema: Schema = new Schema({
     type: String,
     required: true
   },
+
 },
 
   {

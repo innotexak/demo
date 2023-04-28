@@ -48,15 +48,27 @@ const KycLevelType = gql`
   }
 
   type Mutation {
-    addKycLevel(userId: ID!, levelName:String!, providers:[String!]!): String!
+    addKycLevel(userId: ID!, processToken:String): String!
     deleteKycLevel(_id: ID!): String!
     updateKycLevel(levelId:String!, levelName:String!, providers:[String!]!): String!
-    addingArrayOfLevels(userId:ID, levels:[ArrayOfLevels!]!):String
+    addingArrayOfLevels(userId:ID, levels:[ArrayOfLevels!]!):String!
+    createSessionsLevels(numLevels:Int merchantId:String):SessionInterface
+    updateSessonsLevels(processToken:String, levelName:String!, providers:[String!]!): String!
   }
 
     input ArrayOfLevels {
-    levelName:String!
+    levelName:String! 
     providers:[String!]!
+  }
+
+  type ISession{
+    label:String
+    value:String
+  }
+
+  type SessionInterface{
+    processToken:String
+    levels:[ISession]
   }
 
     type IKycLevel{

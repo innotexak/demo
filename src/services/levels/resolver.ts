@@ -1,10 +1,11 @@
 import { IKYCLevel } from '../../models/levels.js'
 import { ILevelValidation } from '../../validation/validation.js'
 import LevelsDatasource from './datasource.js'
+import { ISessionUpdate, ISessionsInterface } from './type.js'
 
 export const LevelsMutation = {
-  async addKycLevel(__, iKycLevel: ILevelValidation): Promise<String> {
-    return await new LevelsDatasource().addKycLevel(iKycLevel)
+  async addKycLevel(__, { userId, processToken }: { userId: string, processToken: string }): Promise<String> {
+    return await new LevelsDatasource().addKycLevel(userId, processToken)
   },
 
   async deleteKycLevel(__, _id: string): Promise<String> {
@@ -20,7 +21,17 @@ export const LevelsMutation = {
   async addingArrayOfLevels(__: unknown, { userId, levels }: { userId: string, levels: [object] }): Promise<String> {
 
     return await new LevelsDatasource().addingArrayOfLevels(userId, levels)
+  },
+
+  async createSessionsLevels(__: unknown, { numLevels, merchantId }: { numLevels: number, merchantId: string }): Promise<ISessionsInterface> {
+
+    return await new LevelsDatasource().createLevelsSessions(numLevels, merchantId)
+  },
+
+  async updateSessonsLevels(__: unknown, { levelName, processToken, providers }: ISessionUpdate): Promise<String> {
+    return await new LevelsDatasource().updateSessionsLevels(processToken, levelName, providers)
   }
+
 
 }
 

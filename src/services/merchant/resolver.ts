@@ -11,12 +11,11 @@ export const MerchantMutation = {
   },
 
 
-
 };
 
 export const MerchantQuery = {
   async getMerchants(__: unknown): Promise<IMerchant[]> {
-    return new UserDatasource().fetchMerchant()
+    return await new UserDatasource().fetchMerchant()
 
 
   },
