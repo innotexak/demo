@@ -98,6 +98,7 @@ class LevelsDatasource extends Base {
 
   }
 
+  // Session based flow for kyc's level configuration 
   async createLevelsSessions(numLevels: number, userId: string): Promise<ISessionsInterface> {
     const isUser = await __KYCLevel.aggregate([
       {
@@ -155,12 +156,12 @@ class LevelsDatasource extends Base {
     }
   }
 
-
+  // Upading session based flow for kyc's level configuration
   async updateSessionsLevels(processToken: string, levelName: string, providers: string[]): Promise<String> {
 
-    const configLevels = await __Session.find({ processToken })
+    const configLevels = await __Session.findOne({ processToken })
 
-    if (!configLevels.length) throw new ErrorHandler().ValidationError('Session expired, try again')
+    if (!configLevels) throw new ErrorHandler().ValidationError('Invalid or expired session, try again')
 
     const mylevel = await __Session.findOne({ levelName: levelName })
 
@@ -173,6 +174,12 @@ class LevelsDatasource extends Base {
     const updated = await __Session.updateOne({ levelName: levelName }, { $set: { providers: mylevel.providers } },);
 
     if (updated.matchedCount > 0) return "Saved, please proceed";
+  }
+
+  async getCurrentSession(processToken: string): Promise<any> {
+    const isSession = await __Session.find({ processToken })
+    if (!isSession.length) throw new ErrorHandler().AuthenticationError('Invalid sessions')
+    return isSession
   }
 
 }

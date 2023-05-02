@@ -1,23 +1,23 @@
 import { Error as MongooseError } from 'mongoose';
-import {MongoError} from 'mongodb'
+import { MongoError } from 'mongodb'
 class MongooseErrorUtils {
 	static handleDuplicateKeyError(error: any): string {
-		console.log(error);
+
 		const field = Object.keys(error.keyValue)[0];
 		const value = error.keyValue[field];
 		const errorMessage = `Duplicate value detected: The value '${value}' already exists for field '${field}'.`;
 		return errorMessage;
 	}
-	
+
 	static handleValidationError(error: MongooseError.ValidationError): string {
 		const errors = Object.values(error.errors).map((e: any) => e.message);
 		const errorMessage = `Validation Error: ${errors.join(', ')}`;
 		return errorMessage;
 	}
-	
+
 	static handleMongooseError(error: MongooseError | MongoError): string {
 		let errorMessage: string;
-		
+
 		switch ((error as any).code) {
 			case 11000:
 				errorMessage = MongooseErrorUtils.handleDuplicateKeyError(error as MongoError);
@@ -29,7 +29,7 @@ class MongooseErrorUtils {
 					errorMessage = 'An unknown error occurred while processing the request.';
 				}
 		}
-		
+
 		return errorMessage;
 	}
 }
