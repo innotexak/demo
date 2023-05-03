@@ -176,6 +176,20 @@ class LevelsDatasource extends Base {
     if (updated.matchedCount > 0) return "Saved, please proceed";
   }
 
+  async deleteSessionsLevel(processToken: string, levelName: string): Promise<String> {
+
+    const configLevels = await __Session.findOne({ processToken })
+
+    if (!configLevels) throw new ErrorHandler().ValidationError('Invalid or expired session, try again')
+    const mylevel = await __Session.findOne({ levelName })
+
+    if (!mylevel) throw new ErrorHandler().ValidationError('Invalid session credentials')
+
+    const updated = await __Session.updateOne({ levelName: levelName }, { $set: { providers: [] } },);
+
+    if (updated.matchedCount > 0) return "Level deleted";
+  }
+
 
   async uploadSavedTempSession(processToken: string) {
     const mySession = await __Session.find({ processToken })

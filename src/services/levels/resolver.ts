@@ -37,6 +37,10 @@ export const LevelsMutation = {
 
   async uploadSavedTempSession(__: unknown, { processToken }: { processToken: string }) {
     return await new LevelsDatasource().uploadSavedTempSession(processToken)
+  },
+
+  async deleteSessionsLevel(__: unknown, { processToken, levelName }: { processToken: string, levelName: string }) {
+    return await new LevelsDatasource().deleteSessionsLevel(processToken, levelName)
   }
 
 }

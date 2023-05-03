@@ -29,6 +29,8 @@ const KycLevelType = gql`
     uploadSavedTempSession(processToken:String!):String!
     
     clearUserSessions(processToken:String!):String!
+
+    deleteSessionsLevel(processToken:String! levelName:String!): String!
   
   }
 
