@@ -26,7 +26,7 @@ const KycLevelType = gql`
       levelName:String!
       providers:[String!]!): String!
 
-    uploadSavedTempSession(processToken:String!):String!
+    uploadSavedTempSession(processToken:String!):[IKycLevel]!
     
     clearUserSessions(processToken:String!):String!
 

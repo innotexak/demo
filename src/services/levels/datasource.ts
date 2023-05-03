@@ -195,19 +195,27 @@ class LevelsDatasource extends Base {
     const mySession = await __Session.find({ processToken })
     if (!mySession.length) throw new ErrorHandler().ValidationError("Invalid or expired session credentials, try again")
     const formattedSession = mySession.map((level) => {
+      const userId = level.userId.toString()
+      const providers = level.providers.map(item => item.toString())
+
       return {
         levelName: level.levelName,
-        userId: level.userId,
-        providers: level.providers,
+        userId: userId,
+        providers
       }
     })
 
-    if (formattedSession.length) {
-      formattedSession.forEach(async (item) => {
-        await __KYCLevel.create(item)
-      });
-      return "KYC levels successfully configured"
+    const result = await Promise.all(
+      formattedSession.map(async (item) => {
+        return await __KYCLevel.create(item);
+      })
+    );
+
+    if (result.length) {
+      await __Session.deleteMany({ processToken })
+      return result
     }
+
   }
   async getCurrentSession(processToken: string): Promise<any> {
 
@@ -218,10 +226,10 @@ class LevelsDatasource extends Base {
 
   async clearUserSessions(processToken: string) {
     const findAll = await __Session.find({ processToken })
-    findAll.forEach(async (element) => {
-      await __Session.findByIdAndRemove({ _id: element._id })
-    });
-    return "Session data cleared successfully"
+
+    const deleted = await __Session.deleteMany({ processToken })
+
+    if (deleted.deletedCount === findAll.length) return "Session data cleared successfully"
   }
 
 }
