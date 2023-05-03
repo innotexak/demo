@@ -162,8 +162,8 @@ class LevelsDatasource extends Base {
     const configLevels = await __Session.findOne({ processToken })
 
     if (!configLevels) throw new ErrorHandler().ValidationError('Invalid or expired session, try again')
-
-    const mylevel = await __Session.findOne({ levelName: levelName })
+    // levelName.charAt(0).toUpperCase()
+    const mylevel = await __Session.findOne({ levelName })
 
     if (!mylevel) throw new ErrorHandler().ValidationError('Invalid session credentials')
 
@@ -176,12 +176,42 @@ class LevelsDatasource extends Base {
     if (updated.matchedCount > 0) return "Saved, please proceed";
   }
 
+
+  async uploadSavedTempSession(processToken: string) {
+    const mySession = await __Session.find({ processToken })
+    if (!mySession.length) throw new ErrorHandler().ValidationError("Invalid or expired session credentials, try again")
+    const formattedSession = mySession.map((level) => {
+      return {
+        levelName: level.levelName,
+        userId: level.userId,
+        providers: level.providers,
+      }
+    })
+
+    if (formattedSession.length) {
+      formattedSession.forEach(async (item) => {
+        await __KYCLevel.create(item)
+      });
+      return "KYC levels successfully configured"
+    }
+  }
   async getCurrentSession(processToken: string): Promise<any> {
+
     const isSession = await __Session.find({ processToken })
-    if (!isSession.length) throw new ErrorHandler().AuthenticationError('Invalid sessions')
+    if (!isSession.length) throw new ErrorHandler().AuthenticationError('Invalid session credential')
     return isSession
   }
 
+  async clearUserSessions(processToken: string) {
+    const findAll = await __Session.find({ processToken })
+    findAll.forEach(async (element) => {
+      await __Session.findByIdAndRemove({ _id: element._id })
+    });
+    return "Session data cleared successfully"
+  }
+
 }
+
+
 
 export default LevelsDatasource

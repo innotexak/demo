@@ -6,6 +6,7 @@ const KycLevelType = gql`
     getKycLevels: [IKycLevel!]!
     
     getKycLevel(_id: ID!): IKycLevel!
+    getCurrentSession(processToken:String!):[TemptSession!]!
   }
 
   type Mutation {
@@ -24,6 +25,11 @@ const KycLevelType = gql`
       processToken:String!
       levelName:String!
       providers:[String!]!): String!
+
+    uploadSavedTempSession(processToken:String!):String!
+    
+    clearUserSessions(processToken:String!):String!
+  
   }
 
     input ArrayOfLevels {
@@ -41,6 +47,13 @@ const KycLevelType = gql`
     levels:[ISession]
   }
 
+  type TemptSession{
+    userId:ID!
+    levelName:String!
+    providers:[String]!
+    processToken:String!
+    createdAt:DateTime!
+  }
     type IKycLevel{
     _id:ID!
     userId:ID!

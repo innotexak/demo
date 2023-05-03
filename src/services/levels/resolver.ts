@@ -29,8 +29,15 @@ export const LevelsMutation = {
   async updateSessonsLevels(__: unknown, { processToken, levelName, providers }: ISessionUpdate): Promise<String> {
 
     return await new LevelsDatasource().updateSessionsLevels(processToken, levelName, providers)
-  }
+  },
 
+  async clearUserSessions(__: unknown, { processToken }: { processToken: string }) {
+    return await new LevelsDatasource().clearUserSessions(processToken)
+  },
+
+  async uploadSavedTempSession(__: unknown, { processToken }: { processToken: string }) {
+    return await new LevelsDatasource().uploadSavedTempSession(processToken)
+  }
 
 }
 
@@ -43,4 +50,8 @@ export const LevelsQuery = {
   async getKycLevel(__: unknown, _id: string): Promise<any> {
     return await new LevelsDatasource().getKycLevel(_id)
   },
+  async getCurrentSession(___: unknown, { processToken }: { processToken: string }) {
+
+    return await new LevelsDatasource().getCurrentSession(processToken)
+  }
 }
