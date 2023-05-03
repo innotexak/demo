@@ -27,6 +27,8 @@ export const LevelsMutation = {
   },
 
   async updateSessonsLevels(__: unknown, { processToken, levelName, providers }: ISessionUpdate): Promise<String> {
+    console.log(processToken, levelName, providers);
+
 
     return await new LevelsDatasource().updateSessionsLevels(processToken, levelName, providers)
   },

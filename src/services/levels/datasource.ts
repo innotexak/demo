@@ -137,7 +137,6 @@ class LevelsDatasource extends Base {
     if (isSession.length) throw new ErrorHandler().ForbiddenError('You already have an existing session')
     let levels: ISession[] = []; // Initialize the levels array
     const processToken = `NA_SE-${crypto.randomBytes(16).toString('hex')}-END`;
-
     if (numLevels <= 0) throw new ErrorHandler().UserInputError('Invalid input');
 
     if (numLevels === 1) {
@@ -160,31 +159,23 @@ class LevelsDatasource extends Base {
   async updateSessionsLevels(processToken: string, levelName: string, providers: string[]): Promise<String> {
 
     const configLevels = await __Session.findOne({ processToken })
-
     if (!configLevels) throw new ErrorHandler().ValidationError('Invalid or expired session, try again')
     // levelName.charAt(0).toUpperCase()
     const mylevel = await __Session.findOne({ levelName })
-
     if (!mylevel) throw new ErrorHandler().ValidationError('Invalid session credentials')
-
     for (let _id of providers) {
       if (!mylevel.providers.includes(_id as any)) mylevel.providers.push(_id as any)
     }
-
     const updated = await __Session.updateOne({ levelName: levelName }, { $set: { providers: mylevel.providers } },);
-
     if (updated.matchedCount > 0) return "Saved, please proceed";
   }
 
   async deleteSessionsLevel(processToken: string, levelName: string): Promise<String> {
 
     const configLevels = await __Session.findOne({ processToken })
-
     if (!configLevels) throw new ErrorHandler().ValidationError('Invalid or expired session, try again')
     const mylevel = await __Session.findOne({ levelName })
-
     if (!mylevel) throw new ErrorHandler().ValidationError('Invalid session credentials')
-
     const updated = await __Session.updateOne({ levelName: levelName }, { $set: { providers: [] } },);
 
     if (updated.matchedCount > 0) return "Level deleted";
@@ -196,6 +187,7 @@ class LevelsDatasource extends Base {
     if (!mySession.length) throw new ErrorHandler().ValidationError("Invalid or expired session credentials, try again")
     const formattedSession = mySession.map((level) => {
       const userId = level.userId.toString()
+      if (!level.providers.length) throw new ErrorHandler().UserInputError(`please selet at least one provider for ${level.levelName}`)
       const providers = level.providers.map(item => item.toString())
 
       return {
@@ -218,7 +210,6 @@ class LevelsDatasource extends Base {
 
   }
   async getCurrentSession(processToken: string): Promise<any> {
-
     const isSession = await __Session.find({ processToken })
     if (!isSession.length) throw new ErrorHandler().AuthenticationError('Invalid session credential')
     return isSession
@@ -226,9 +217,7 @@ class LevelsDatasource extends Base {
 
   async clearUserSessions(processToken: string) {
     const findAll = await __Session.find({ processToken })
-
     const deleted = await __Session.deleteMany({ processToken })
-
     if (deleted.deletedCount === findAll.length) return "Session data cleared successfully"
   }
 
