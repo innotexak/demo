@@ -3,7 +3,7 @@ import { gql } from 'graphql-tag'
 const KycLevelType = gql`
 
   type Query {
-    getKycLevels: [IKycLevel!]!
+    getKycLevels(userId:String!): [IKycLevel!]!
     
     getKycLevel(_id: ID!): IKycLevel!
     getCurrentSession(processToken:String!):[TemptSession!]!
@@ -60,7 +60,7 @@ const KycLevelType = gql`
     _id:ID!
     userId:ID!
     levelName:String!
-    providers:[ID!]!
+    providers:[ServiceProvider]
     updatedAt:DateTime!
     createdAt:DateTime!
   }
@@ -68,6 +68,14 @@ const KycLevelType = gql`
     type Field {
     inputType: String
     title: String
+  }
+
+
+  type ServiceProvider {
+    _id: ID
+    service: String
+    disabled: Boolean
+    fields: [Field]
   }
 
   enum FieldType {

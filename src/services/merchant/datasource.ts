@@ -6,16 +6,14 @@ import { IMerchant } from './interfaces.js'
 
 class MerchantDatasource extends Base {
 
-
     async createMerchant(data: any): Promise<string> {
 
         const keys = await this.generateUniqueApiKeys()
-
-        const create = await __Merchant.create({
+        const created = await __Merchant.create({
             ...keys,
             ...data
         })
-        if (create) return "Merchant created successfully"
+        if (created) return "Merchant created successfully"
     }
 
     async fetchMerchant(): Promise<IMerchant[]> {

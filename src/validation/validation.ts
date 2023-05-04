@@ -29,14 +29,33 @@ const createKycSchema = object({
     kycType: string().oneOf(["bvn", "nin", "passport", "drivingLicence"]),
 })
 
-const validationNumberSchema = object({
-    validationNumber: string().min(11, 'Minimum of 11 digits requried').max(16, 'Maximum of 16 digits requried').required()
+const ninNumber = object({
+    validationNumber: string().matches(/^\d{11}$/, 'NIN must be a 11-digit number').length(11, "NIN must be exactly 11 digits").required("NIN is requried")
 })
+
+const bvnNumber = object({
+    validationNumber: string().length(11, "BVN Must be exactly 11 digits").required("BVN is requried")
+})
+
+const drivingLicenceNumber = object({
+    validationNumber: string()
+        .matches(/^[A-Za-z0-9]{16}$/, 'Driving licence number must be a 16-character code that consists of letters and numbers')
+        .required('Driving licence number is required')
+});
+
+const passportNumber = object({
+    validationNumber: string()
+        .matches(/^[A-Za-z]\d{8}$/, 'Passport number must start with an alphabet and be followed by 8 digits')
+        .required('Passport number is required')
+});
 
 export type ILevelValidation = InferType<typeof createLevelSchema>;
 export type IServiceValidation = InferType<typeof createServiceSchema>
 export type IKycValidation = InferType<typeof createKycSchema>
-export type IValidationNumber = InferType<typeof validationNumberSchema>
+export type INinValidation = InferType<typeof ninNumber>
+export type IBvnValidation = InferType<typeof bvnNumber>
+export type IPassportValidation = InferType<typeof passportNumber>
+export type IDrivingLicenceValidation = InferType<typeof drivingLicenceNumber>
 
 export class LevelsValidation {
     createLevel(levelData: ILevelValidation) {
@@ -74,10 +93,48 @@ export class KycsValidation {
     }
 }
 
-export class ValNumberValidation {
-    validateNumber(val: IValidationNumber) {
+
+
+export class NinValidation {
+    validateNin(nin: INinValidation) {
         return new Promise((resolve, reject) => {
-            validationNumberSchema.validate(val, { abortEarly: true }).then((data) => {
+            ninNumber.validate(nin, { abortEarly: true }).then((data) => {
+                resolve(data)
+            }).catch((err) => {
+                reject(new ErrorHandler().ValidationError(err))
+            })
+        })
+    }
+}
+
+export class BvnValidation {
+    validateBvn(bvn: IBvnValidation) {
+        return new Promise((resolve, reject) => {
+            bvnNumber.validate(bvn, { abortEarly: true }).then((data) => {
+                resolve(data)
+            }).catch((err) => {
+                reject(new ErrorHandler().ValidationError(err))
+            })
+        })
+    }
+}
+
+export class DrivingLicenceValidation {
+    validateDrivingLicence(drivingLincence: IDrivingLicenceValidation) {
+        return new Promise((resolve, reject) => {
+            drivingLicenceNumber.validate(drivingLincence, { abortEarly: true }).then((data) => {
+                resolve(data)
+            }).catch((err) => {
+                reject(new ErrorHandler().ValidationError(err))
+            })
+        })
+    }
+}
+
+export class PassportValidation {
+    validatePassport(passport: IPassportValidation) {
+        return new Promise((resolve, reject) => {
+            passportNumber.validate(passport, { abortEarly: true }).then((data) => {
                 resolve(data)
             }).catch((err) => {
                 reject(new ErrorHandler().ValidationError(err))

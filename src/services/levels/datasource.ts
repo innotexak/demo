@@ -2,7 +2,6 @@ import { Types } from 'mongoose'
 import Base from '../../Base.js'
 import crypto from 'crypto'
 import { ErrorHandler } from '../../helpers/ErrorHandler.js'
-
 import __KYCLevel from '../../models/levels.js'
 import { ILevelValidation, LevelsValidation } from '../../validation/validation.js'
 import { ISession, ISessionsInterface } from './type.js'
@@ -13,17 +12,21 @@ import __Merchant from '../../models/merchant.js'
 class LevelsDatasource extends Base {
 
   //Get all kyc levels
-  async getKycLevels(): Promise<any> {
+  async getKycLevels(userId: string): Promise<any> {
     const kycLevels = await __KYCLevel.aggregate([
+      {
+        $match: { userId: new Types.ObjectId(userId) },
+      },
       {
         $lookup: {
           from: "service_providers",
           localField: "providers",
           foreignField: "_id",
-          as: "providers"
-        }
-      }
-    ])
+          as: "providers",
+        },
+      },
+    ]).exec();
+    console.log('it logged here', kycLevels);
 
     if (kycLevels.length === null || kycLevels.length === undefined) throw new ErrorHandler().NotFoundError('Record not found')
     return kycLevels
@@ -170,6 +173,7 @@ class LevelsDatasource extends Base {
     if (updated.matchedCount > 0) return "Saved, please proceed";
   }
 
+  // delete session
   async deleteSessionsLevel(processToken: string, levelName: string): Promise<String> {
 
     const configLevels = await __Session.findOne({ processToken })
@@ -181,7 +185,7 @@ class LevelsDatasource extends Base {
     if (updated.matchedCount > 0) return "Level deleted";
   }
 
-
+  // upload saved temporary session
   async uploadSavedTempSession(processToken: string) {
     const mySession = await __Session.find({ processToken })
     if (!mySession.length) throw new ErrorHandler().ValidationError("Invalid or expired session credentials, try again")
@@ -209,12 +213,15 @@ class LevelsDatasource extends Base {
     }
 
   }
+
+  // get current session
   async getCurrentSession(processToken: string): Promise<any> {
     const isSession = await __Session.find({ processToken })
     if (!isSession.length) throw new ErrorHandler().AuthenticationError('Invalid session credential')
     return isSession
   }
 
+  // clear current session
   async clearUserSessions(processToken: string) {
     const findAll = await __Session.find({ processToken })
     const deleted = await __Session.deleteMany({ processToken })

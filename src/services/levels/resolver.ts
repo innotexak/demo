@@ -12,24 +12,18 @@ export const LevelsMutation = {
 
   async updateKycLevel(__: unknown, iKycLevel: { levelId: string, levelName: string, providers: string[] }): Promise<String> {
     const { levelId, levelName, providers } = iKycLevel
-
     return await new LevelsDatasource().updateKycLevel(levelId, { levelName, providers })
   },
 
   async addingArrayOfLevels(__: unknown, { userId, levels }: { userId: string, levels: [object] }): Promise<String> {
-
     return await new LevelsDatasource().addingArrayOfLevels(userId, levels)
   },
 
   async createSessionsLevels(__: unknown, { numLevels, merchantId }: { numLevels: number, merchantId: string }): Promise<ISessionsInterface> {
-
     return await new LevelsDatasource().createLevelsSessions(numLevels, merchantId)
   },
 
   async updateSessonsLevels(__: unknown, { processToken, levelName, providers }: ISessionUpdate): Promise<String> {
-    console.log(processToken, levelName, providers);
-
-
     return await new LevelsDatasource().updateSessionsLevels(processToken, levelName, providers)
   },
 
@@ -48,16 +42,14 @@ export const LevelsMutation = {
 }
 
 export const LevelsQuery = {
-  async getKycLevels(): Promise<any> {
-
-    return await new LevelsDatasource().getKycLevels()
+  async getKycLevels(__: unknown, { userId }: { userId: string }): Promise<any> {
+    return await new LevelsDatasource().getKycLevels(userId)
   },
 
   async getKycLevel(__: unknown, _id: string): Promise<any> {
     return await new LevelsDatasource().getKycLevel(_id)
   },
   async getCurrentSession(___: unknown, { processToken }: { processToken: string }) {
-
     return await new LevelsDatasource().getCurrentSession(processToken)
   }
 }

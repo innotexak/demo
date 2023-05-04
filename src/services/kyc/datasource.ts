@@ -1,40 +1,35 @@
-import { Types } from 'mongoose'
 import Base from '../../Base.js'
-
 import { ErrorHandler } from '../../helpers/ErrorHandler.js'
-
 import __Kyc from '../../models/Kyc.js'
-import { KycsValidation, ValNumberValidation } from '../../validation/validation.js'
+import { BvnValidation, DrivingLicenceValidation, KycsValidation, NinValidation, PassportValidation } from '../../validation/validation.js'
 import { ICreateKyc } from './interfaces.js'
 
 class LevelsDatasource extends Base {
-
-
   async verifyNIN(validationNumber: string): Promise<any> {
-    await new ValNumberValidation().validateNumber({ validationNumber })
+    await new NinValidation().validateNin({ validationNumber })
     const data = await __Kyc.findOne({ validationNumber })
-    if (!data) throw new ErrorHandler().UserInputError('Invalid  NIN provided')
+    if (!data) throw new ErrorHandler().NotFoundError('Data not found')
     return data
   }
-  async verifyBVN(validationNumber: string): Promise<any> {
-    await new ValNumberValidation().validateNumber({ validationNumber })
-    const data = await __Kyc.findOne({ validationNumber })
 
-    if (!data) throw new ErrorHandler().UserInputError('Invalid BVN provided')
+  async verifyBVN(validationNumber: string): Promise<any> {
+    await new BvnValidation().validateBvn({ validationNumber })
+    const data = await __Kyc.findOne({ validationNumber })
+    if (!data) throw new ErrorHandler().NotFoundError('Data not found')
     return data
   }
 
   async verifyPassport(validationNumber: string): Promise<any> {
-    await new ValNumberValidation().validateNumber({ validationNumber })
+    await new PassportValidation().validatePassport({ validationNumber })
     const data = await __Kyc.findOne({ validationNumber })
-    if (!data) throw new ErrorHandler().UserInputError('Invalid data provided')
+    if (!data) throw new ErrorHandler().NotFoundError('Data not found')
     return data
   }
 
   async verifyDrivingLincence(validationNumber: string): Promise<any> {
-    await new ValNumberValidation().validateNumber({ validationNumber })
+    await new DrivingLicenceValidation().validateDrivingLicence({ validationNumber })
     const data = await __Kyc.findOne({ validationNumber })
-    if (!data) throw new ErrorHandler().UserInputError('Invalid driving lincence provided')
+    if (!data) throw new ErrorHandler().NotFoundError('Data not found')
     return data
   }
 
