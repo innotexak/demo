@@ -12,10 +12,10 @@ import __Merchant from '../../models/merchant.js'
 class LevelsDatasource extends Base {
 
   //Get all kyc levels
-  async getKycLevels(userId: string): Promise<any> {
+  async getKycLevels(merchantId: string): Promise<any> {
     const kycLevels = await __KYCLevel.aggregate([
       {
-        $match: { userId: new Types.ObjectId(userId) },
+        $match: { merchantId: new Types.ObjectId(merchantId) },
       },
       {
         $lookup: {
@@ -26,7 +26,6 @@ class LevelsDatasource extends Base {
         },
       },
     ]).exec();
-    console.log('it logged here', kycLevels);
 
     if (kycLevels.length === null || kycLevels.length === undefined) throw new ErrorHandler().NotFoundError('Record not found')
     return kycLevels
@@ -49,7 +48,7 @@ class LevelsDatasource extends Base {
   }
 
   // Method for adding a new kyc  level
-  async addKycLevel(userId: string, processToken: string): Promise<String> {
+  async addKycLevel(processToken: string): Promise<String> {
     const sessionData = await __Session.find({ processToken })
     if (!sessionData.length) throw new ErrorHandler().ValidationError("Invalid session")
     const data = sessionData.map((item) => {
@@ -158,7 +157,7 @@ class LevelsDatasource extends Base {
     }
   }
 
-  // Upading session based flow for kyc's level configuration
+  // Updating session based flow for kyc's level configuration
   async updateSessionsLevels(processToken: string, levelName: string, providers: string[]): Promise<String> {
 
     const configLevels = await __Session.findOne({ processToken })
@@ -191,7 +190,7 @@ class LevelsDatasource extends Base {
     if (!mySession.length) throw new ErrorHandler().ValidationError("Invalid or expired session credentials, try again")
     const formattedSession = mySession.map((level) => {
       const userId = level.userId.toString()
-      if (!level.providers.length) throw new ErrorHandler().UserInputError(`please selet at least one provider for ${level.levelName}`)
+      if (!level.providers.length) throw new ErrorHandler().UserInputError(`Please selet at least one provider for ${level.levelName}`)
       const providers = level.providers.map(item => item.toString())
 
       return {

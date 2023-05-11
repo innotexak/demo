@@ -2,8 +2,8 @@ import LevelsDatasource from './datasource.js'
 import { ISessionUpdate, ISessionsInterface } from './type.js'
 
 export const LevelsMutation = {
-  async addKycLevel(__: unknown, { userId, processToken }: { userId: string, processToken: string }): Promise<String> {
-    return await new LevelsDatasource().addKycLevel(userId, processToken)
+  async addKycLevel(__: unknown, { processToken }: { processToken: string }): Promise<String> {
+    return await new LevelsDatasource().addKycLevel(processToken)
   },
 
   async deleteKycLevel(__: unknown, _id: string): Promise<String> {

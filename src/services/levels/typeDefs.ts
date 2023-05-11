@@ -11,7 +11,7 @@ const KycLevelType = gql`
 
   type Mutation {
 
-    addKycLevel(userId: ID! processToken:String): String!
+    addKycLevel(processToken:String): String!
 
     deleteKycLevel(_id: ID!): String!
 

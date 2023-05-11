@@ -1,5 +1,9 @@
-import { Schema, Document, model, ObjectId, Model } from 'mongoose';
+import { Schema, Document, model, ObjectId } from 'mongoose';
 
+export interface IKYCInfo {
+    type: string;
+    id: ObjectId;
+}
 
 export interface IMerchant extends Document {
     merchantId: string,
@@ -11,6 +15,7 @@ export interface IMerchant extends Document {
     secretKey: string
     testPublicKey: string
     testSecretKey: string
+    kycLevel: IKYCInfo[];
 }
 
 const merchantKycsSchema: Schema = new Schema({
@@ -46,6 +51,18 @@ const merchantKycsSchema: Schema = new Schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    kycLevel: {
+        type: [
+            {
+                type: {
+                    type: String,
+                    enum: ['nin', 'bvn', 'passport', 'driverLicense']
+                },
+                kycId: { type: Schema.Types.ObjectId, required: true }
+            }
+        ],
+        default: []
     },
     publicKey: {
         type: String,

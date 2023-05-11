@@ -2,21 +2,27 @@ import mongoose, { Schema, Document, model, ObjectId } from "mongoose";
 
 // Define the fields of your schema
 export interface IKyc extends Document {
-  userId: ObjectId,
+  merchantId: ObjectId,
   validationNumber: string,
   firstName: string,
   lastName: string,
   phoneNumber: string,
   dateOfBirth: Date,
   status: string,
+  userRef: string,
   gender: 'male' | 'female',
   kycType: "bvn" | "nin" | "passport" | "drivingLicence"
 }
 
 const KycSchema: Schema = new Schema({
-  userId: {
+  merchantId: {
     type: Schema.Types.ObjectId,
     required: true,
+  },
+
+  userRef: {
+    type: String,
+    required: true
   },
 
   validationNumber: {
@@ -35,22 +41,27 @@ const KycSchema: Schema = new Schema({
     enum: ["bvn", "nin", "passport", "drivingLicence"],
     required: true,
   },
+
   firstName: {
     type: String,
     required: true
   },
+
   lastName: {
     type: String,
     required: true,
   },
+
   phoneNumber: {
     type: String,
     required: true
   },
+
   dateOfBirth: {
     type: Date,
     required: true
   },
+
   status: {
     type: String,
     required: true
@@ -67,7 +78,33 @@ const KycSchema: Schema = new Schema({
     toJSON: { virtuals: true, versionKey: false },
   });
 
-// Create and export the mongoose model
-// export const KycModel = mongoose.model<IKyc>("Kyc", KycSchema);
+
+
+
+// const userSchema = new mongoose.Schema({
+
+//   userRef: {
+//     type: String,
+//     required: true
+//   },
+
+
+//   kyc: [{
+//     type: Schema.Types.ObjectId,
+//     ref: 'KYC'
+//   }]
+// },
+//   {
+//     versionKey: false,
+//     timestamps: true,
+//     toObject: {
+//       virtuals: true,
+//     },
+//     toJSON: { virtuals: true, versionKey: false },
+//   });
+
+// const User = mongoose.model('User', userSchema);
+
+
 
 export default model<IKyc>("Kycs", KycSchema);

@@ -7,6 +7,8 @@ const KycType = gql`
     
   }
 type Mutation {
+  InitTransaction(userRef:String! merchantId:ID!):String!
+  InitializeVerification(userRef:String! merchantId:ID!):JSON!
   verifyNIN(validationNumber:String!): Ikyc
   verifyBVN(validationNumber:String!): Ikyc
   verifyPassport(validationNumber:String!): Ikyc
@@ -28,7 +30,8 @@ enum KycEnum{
 }
 
 type Ikyc {
-  userId: ID!
+  merchantId: ID!
+  userRef:String
   validationNumber: String
   firstName: String
   lastName: String
@@ -40,7 +43,8 @@ type Ikyc {
 }
 
 input KycInputInterface{  
-  userId: ID!
+  merchantId: ID!
+  userRef:String!
   validationNumber: String
   firstName: String
   lastName: String

@@ -12,6 +12,7 @@ import * as path from 'path'
 import nodemailer from 'nodemailer'
 import * as fs from "fs";
 import { model } from 'mongoose';
+import __merchant from './models/merchant.js'
 
 
 
@@ -135,6 +136,17 @@ export default class Base {
         await transporter.sendMail(mailOptions as object)
     }
 
+    async InitPaymentTransanction(merchantId: string, amount: string) {
+        const merchant = await __merchant.findOne({ merchantId });
+        if (merchant?.ballance) {
+            const parseBallance: number = JSON.parse(merchant.ballance)
+            const parseCharge: number = JSON.parse(amount)
+            if (parseBallance <= parseCharge) return false
+            const debitMerchantAccount: number = parseBallance - parseCharge
+            const updated = await __merchant.updateOne({ _id: merchant._id }, { ballance: JSON.stringify(debitMerchantAccount) }, { new: true })
+            if (updated.matchedCount > 0) return true
+        }
+    }
     // mailMessageForProfileUpdate(data: { email: string, password: string }) {
     //     return `
     // 	  <b style="font-size: 10px">Note: These Credentials will be used for both the mobile App and email account</b>

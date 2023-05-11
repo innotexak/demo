@@ -7,7 +7,8 @@ interface UserInput {
 }
 
 interface ICreateKyc {
-  userId: string,
+  merhcnatId: string,
+  userRef: string,
   validationNumber: string,
   firstName: string,
   lastName: string,
@@ -18,4 +19,10 @@ interface ICreateKyc {
   kycType: "bvn" | "nin" | "passport" | "drivingLicence"
 }
 
-export { UserInput, ICreateKyc };
+interface ITranactionInit {
+  userRef: string,
+  merchantId: string
+}
+
+
+export { UserInput, ICreateKyc, ITranactionInit };
