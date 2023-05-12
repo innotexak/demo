@@ -13,29 +13,37 @@ class LevelsDatasource extends Base {
   async verifyNIN(validationNumber: string): Promise<any> {
     // await this.InitPaymentTransanction(merchantId, '25')
     await new NinValidation().validateNin({ validationNumber })
-    const data = await __Kyc.findOne({ validationNumber })
+    const data = await __Kyc.findOne({
+      $and: [{ validationNumber }, { kycType: 'nin' }]
+    })
     if (!data) throw new ErrorHandler().ValidationError('NIN verification failed')
     return data
   }
 
   async verifyBVN(validationNumber: string): Promise<any> {
     await new BvnValidation().validateBvn({ validationNumber })
-    const data = await __Kyc.findOne({ validationNumber })
-    if (!data) throw new ErrorHandler().ValidationError('NIN verification failed')
+    const data = await __Kyc.findOne({
+      $and: [{ validationNumber }, { kycType: 'bvn' }]
+    })
+    if (!data) throw new ErrorHandler().ValidationError('BVN verification failed')
     return data
   }
 
   async verifyPassport(validationNumber: string): Promise<any> {
     await new PassportValidation().validatePassport({ validationNumber })
-    const data = await __Kyc.findOne({ validationNumber })
-    if (!data) throw new ErrorHandler().ValidationError('NIN verification failed')
+    const data = await __Kyc.findOne({
+      $and: [{ validationNumber }, { kycType: 'passport' }]
+    })
+    if (!data) throw new ErrorHandler().ValidationError('Passport verification failed')
     return data
   }
 
   async verifyDrivingLincence(validationNumber: string): Promise<any> {
     await new DrivingLicenceValidation().validateDrivingLicence({ validationNumber })
-    const data = await __Kyc.findOne({ validationNumber })
-    if (!data) throw new ErrorHandler().ValidationError('NIN verification failed')
+    const data = await __Kyc.findOne({
+      $and: [{ validationNumber }, { kycType: 'drivingLicence' }]
+    })
+    if (!data) throw new ErrorHandler().ValidationError('Driving License verification failed')
     return data
   }
 
