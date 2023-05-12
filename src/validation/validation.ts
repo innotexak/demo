@@ -18,7 +18,7 @@ const createServiceSchema = object({
 });
 
 const createKycSchema = object({
-    validationNumber: string().min(11, "Validation number can't be less than 11 digits").max(16, "Validation number can't be more than 16 digits").required("Validation number is requried"),
+    validationNumber: string().min(9, "Validation number can't be less than 9 digits").max(16, "Validation number can't be more than 16 digits").required("Validation number is requried"),
     firstName: string().required(),
     lastName: string().required(),
     phoneNumber: string().required(),
