@@ -10,26 +10,17 @@ const KycLevelType = gql`
   }
 
   type Mutation {
-
     addKycLevel(processToken:String): String!
-
     deleteKycLevel(_id: ID!): String!
-
     updateKycLevel(levelId:String! levelName:String! providers:[String!]!): String!
-
     addingArrayOfLevels(userId:ID, levels:[ArrayOfLevels!]!):String!
-
     createSessionsLevels(numLevels:Int merchantId:String):SessionInterface
-
     updateSessonsLevels(
       processToken:String!
       levelName:String!
       providers:[String!]!): String!
-
     uploadSavedTempSession(processToken:String!):[IKycLevel]!
-    
-    clearUserSessions(processToken:String!):String!
-
+    clearUserSessions(processToken:String!):Boolean!
     deleteSessionsLevel(processToken:String! levelName:String!): String!
   
   }

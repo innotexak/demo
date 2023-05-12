@@ -27,7 +27,7 @@ export const LevelsMutation = {
     return await new LevelsDatasource().updateSessionsLevels(processToken, levelName, providers)
   },
 
-  async clearUserSessions(__: unknown, { processToken }: { processToken: string }) {
+  async clearUserSessions(__: unknown, { processToken }: { processToken: string }): Promise<boolean> {
     return await new LevelsDatasource().clearUserSessions(processToken)
   },
 
@@ -53,3 +53,5 @@ export const LevelsQuery = {
     return await new LevelsDatasource().getCurrentSession(processToken)
   }
 }
+
+

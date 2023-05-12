@@ -15,7 +15,7 @@ class LevelsDatasource extends Base {
   async getKycLevels(merchantId: string): Promise<any> {
     const kycLevels = await __KYCLevel.aggregate([
       {
-        $match: { merchantId: new Types.ObjectId(merchantId) },
+        $match: { userId: new Types.ObjectId(merchantId) },
       },
       {
         $lookup: {
@@ -220,11 +220,11 @@ class LevelsDatasource extends Base {
     return isSession
   }
 
-  // clear current session
-  async clearUserSessions(processToken: string) {
-    const findAll = await __Session.find({ processToken })
+  // clear user current session
+  async clearUserSessions(processToken: string): Promise<boolean> {
     const deleted = await __Session.deleteMany({ processToken })
-    if (deleted.deletedCount === findAll.length) return "Session data cleared successfully"
+    if (deleted.deletedCount > 0) return true
+    return false
   }
 
 }
