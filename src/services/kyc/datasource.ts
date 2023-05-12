@@ -10,8 +10,8 @@ import { ICreateKyc } from './interfaces.js'
 import crypto from 'crypto'
 
 class LevelsDatasource extends Base {
-  async verifyNIN(validationNumber: string, merchantId: string): Promise<any> {
-    await this.InitPaymentTransanction(merchantId, '25')
+  async verifyNIN(validationNumber: string): Promise<any> {
+    // await this.InitPaymentTransanction(merchantId, '25')
     await new NinValidation().validateNin({ validationNumber })
     const data = await __Kyc.findOne({ validationNumber })
     if (!data) throw new ErrorHandler().ValidationError('NIN verification failed')

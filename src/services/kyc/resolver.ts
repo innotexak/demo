@@ -16,8 +16,8 @@ export const KycMutation = {
     return await new UserDatasource().InitializeVerification(userRef, merchantId);
   },
 
-  async verifyNIN(__: unknown, { validationNumber, merchantId }: { validationNumber: string, merchantId: string }): Promise<any> {
-    return await new UserDatasource().verifyNIN(validationNumber, merchantId);
+  async verifyNIN(__: unknown, { validationNumber }: { validationNumber: string }): Promise<any> {
+    return await new UserDatasource().verifyNIN(validationNumber);
   },
 
   async verifyBVN(__: unknown, { validationNumber }: { validationNumber: string }): Promise<any> {
