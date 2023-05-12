@@ -2,28 +2,17 @@ import mongoose, { Schema, Document, model, ObjectId } from "mongoose";
 
 // Define the fields of your schema
 export interface IKyc extends Document {
-  merchantId: ObjectId,
   validationNumber: string,
   firstName: string,
   lastName: string,
   phoneNumber: string,
   dateOfBirth: Date,
   status: string,
-  userRef: string,
   gender: 'male' | 'female',
   kycType: "bvn" | "nin" | "passport" | "drivingLicence"
 }
 
 const KycSchema: Schema = new Schema({
-  merchantId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-
-  userRef: {
-    type: String,
-    required: true
-  },
 
   validationNumber: {
     type: String,

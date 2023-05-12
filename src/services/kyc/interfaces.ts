@@ -7,8 +7,6 @@ interface UserInput {
 }
 
 interface ICreateKyc {
-  merhcnatId: string,
-  userRef: string,
   validationNumber: string,
   firstName: string,
   lastName: string,

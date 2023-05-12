@@ -18,14 +18,12 @@ const createServiceSchema = object({
 });
 
 const createKycSchema = object({
-    merchantId: objectId.required(),
     validationNumber: string().min(11, "Validation number can't be less than 11 digits").max(16, "Validation number can't be more than 16 digits").required("Validation number is requried"),
     firstName: string().required(),
     lastName: string().required(),
     phoneNumber: string().required(),
     dateOfBirth: date().required(),
     status: string().required(),
-    userRef: string().required(),
     gender: string().oneOf(['male', 'female']),
     kycType: string().oneOf(["bvn", "nin", "passport", "drivingLicence"]),
 })

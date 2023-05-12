@@ -43,8 +43,6 @@ type Ikyc {
 }
 
 input KycInputInterface{  
-  merchantId: ID!
-  userRef:String!
   validationNumber: String
   firstName: String
   lastName: String
