@@ -30,8 +30,6 @@ enum KycEnum{
 }
 
 type Ikyc {
-  merchantId: ID!
-  userRef:String
   validationNumber: String
   firstName: String
   lastName: String
